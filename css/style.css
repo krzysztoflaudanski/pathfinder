@@ -1,0 +1,62 @@
+body {
+  background: black;
+}
+
+.main {
+  height: 1150px;
+  position: relative;
+}
+
+#map {
+  width: 1150px;
+  display: inline-block;
+}
+
+.gameBlock {
+  background: white;
+}
+
+.green {
+  background: green;
+}
+
+.red {
+  position: relative;
+}
+
+.red::after {
+  height: 100px;
+  width: 10px;
+  background: red;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  content: "";
+  rotate: 45deg;
+}
+
+.red::before {
+  height: 10px;
+  width: 100px;
+  background: red;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  content: "";
+  rotate: 45deg;
+}
+
+button {
+  width: 200px;
+  height: 50px;
+  font-size: 30px;
+}
+
+#buttons {
+  position: absolute;
+  margin-top: 100px;
+  margin-left: 100px;
+  display: inline-block;
+}
+
+/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uL3Nhc3Mvc3R5bGUuc2NzcyIsInN0eWxlLmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNFLGlCQUFBO0FDQ0Y7O0FERUE7RUFDRSxjQUFBO0VBQ0Esa0JBQUE7QUNDRjs7QURHQTtFQUNFLGFBQUE7RUFDQSxxQkFBQTtBQ0FGOztBREdBO0VBQ0UsaUJBQUE7QUNBRjs7QURHQTtFQUNFLGlCQUFBO0FDQUY7O0FER0E7RUFDRSxrQkFBQTtBQ0FGOztBREdBO0VBQ0UsYUFBQTtFQUNBLFdBQUE7RUFDQSxlQUFBO0VBQ0Esa0JBQUE7RUFDQSxTQUFBO0VBQ0EsMkJBQUE7RUFDQSxXQUFBO0VBQ0EsYUFBQTtBQ0FGOztBREVBO0VBQ0UsWUFBQTtFQUNBLFlBQUE7RUFDQSxlQUFBO0VBQ0Esa0JBQUE7RUFDQSxRQUFBO0VBQ0EsMkJBQUE7RUFDQSxXQUFBO0VBQ0EsYUFBQTtBQ0NGOztBREVBO0VBQ0UsWUFBQTtFQUNBLFlBQUE7RUFDQSxlQUFBO0FDQ0Y7O0FERUE7RUFDRSxrQkFBQTtFQUNBLGlCQUFBO0VBQ0Esa0JBQUE7RUFDQSxxQkFBQTtBQ0NGIiwiZmlsZSI6InN0eWxlLmNzcyJ9 */

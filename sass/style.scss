@@ -1,0 +1,60 @@
+body {
+  background: black;
+}
+
+.main {
+  height:1150px;
+  position: relative;
+
+}
+
+#map {
+  width: 1150px;
+  display: inline-block;
+}
+
+.gameBlock {
+  background: white;
+}
+
+.green {
+  background: green;
+}
+
+.red {
+  position: relative
+}
+
+.red::after {
+  height: 100px;
+  width: 10px;
+  background: red;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  content: '';
+  rotate: 45deg;}
+
+.red::before {
+  height: 10px;
+  width: 100px;
+  background: red;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  content: '';
+  rotate: 45deg;
+}
+
+button {
+  width: 200px;
+  height: 50px;
+  font-size: 30px;
+}
+
+#buttons {
+  position:absolute;
+  margin-top:100px;
+  margin-left:100px;
+  display: inline-block;
+}
