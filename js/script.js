@@ -43,6 +43,7 @@ const game = () => {
               gameBlock.classList.add('green');
               start = false;
               availableMove();
+              addEventListenerForBadMove();
               return;
             }
             else {
@@ -65,6 +66,7 @@ const game = () => {
   };
 
   const nextMoves = (x, y) => {
+    addEventListenerForBadMove();
     for (let gameBlock of gameBlocks) {
       const arrayId = [
         ('x' + (x + 1) + 'y' + (y + 1)),
@@ -78,12 +80,13 @@ const game = () => {
       ];
       for (let id of arrayId) {
         if (!gameBlock.classList.contains('green') && gameBlock.id === id && !gameBlock.classList.contains('clickable')) {
+          removeEventListenerForBadMove();
           gameBlock.classList.add('clickable');
           gameBlock.addEventListener('click', function (e) {
             e.preventDefault();
+            removeBadMoves();
             gameBlock.classList.add('green');
             gameBlock.classList.remove('clickable');
-            console.log();
             availableMove();
           });
         }
@@ -91,23 +94,25 @@ const game = () => {
     }
   };
 
-  // const addEventListenerForMove = () => {
-  //   for (let gameBlock of gameBlocks) {
-  //     if (!gameBlock.classList.contains('green') && !gameBlock.classList.contains('clickable')) {
-  //       gameBlock.addEventListener('click', function (e) {
-  //         e.preventDefault();
-  //         gameBlock.classList.add('red');
-  //       });}
-  //   }
-  // };
-  // const removeEventListenerForMove = () => {
-  //   for (let gameBlock of gameBlocks) {
-  //     gameBlock.removeEventListener('click', availableMove);
-  //   }
-  // };
+  function badMove() {
+    const clickedElement = this;
+    console.log(clickedElement);
+    clickedElement.classList.add('red');
+  }
 
+  const addEventListenerForBadMove = () => {
+    for (let gameBlock of gameBlocks) {
+      if (!gameBlock.classList.contains('green') && !gameBlock.classList.contains('clickable')) {
+        gameBlock.addEventListener('click', badMove);
+      }
+    }
+  };
 
+  const removeEventListenerForBadMove = () => {
+    for (let gameBlock of gameBlocks) {
+      gameBlock.removeEventListener('click', badMove);
+    }
+  };
   firstMove();
-
 };
 game();
