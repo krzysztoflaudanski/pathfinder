@@ -26,6 +26,9 @@ const game = () => {
 
   let start = true;
 
+  let arrayId = [''];
+  console.log(arrayId);
+
   const removeBadMoves = () => {
     for (let gameBlock of gameBlocks)
       gameBlock.classList.remove('red');
@@ -43,7 +46,7 @@ const game = () => {
               gameBlock.classList.add('green');
               start = false;
               availableMove();
-              addEventListenerForBadMove();
+              addEventListenerForMove();
               return;
             }
             else {
@@ -54,44 +57,71 @@ const game = () => {
       });
   };
 
+  firstMove();
+
   const availableMove = () => {
     for (let gameBlock of gameBlocks) {
       if (gameBlock.classList.contains('green')) {
+        console.log(gameBlock);
         const id = gameBlock.getAttribute('id');
         const x = parseInt(id.substring(1, 2));
         const y = parseInt(id.substring(3, 4));
         nextMoves(x, y);
+        console.log(x, y);
       }
     }
   };
 
   const nextMoves = (x, y) => {
-    addEventListenerForBadMove();
-    for (let gameBlock of gameBlocks) {
-      const arrayId = [
-        ('x' + (x + 1) + 'y' + (y + 1)),
-        ('x' + x + 'y' + (y + 1)),
-        ('x' + (x + 1) + 'y' + y),
-        ('x' + (x - 1) + 'y' + (y - 1)),
-        ('x' + x + 'y' + (y - 1)),
-        ('x' + (x - 1) + 'y' + y),
-        ('x' + (x + 1) + 'y' + (y - 1)),
-        ('x' + (x - 1) + 'y' + (y + 1)),
-      ];
-      for (let id of arrayId) {
-        if (!gameBlock.classList.contains('green') && gameBlock.id === id && !gameBlock.classList.contains('clickable')) {
-          removeEventListenerForBadMove();
+    removeEventListenerForMove();
+    removeEventListenerForBadMove();
+    arrayId = [
+      // ('x' + (x + 1) + 'y' + (y + 1)),
+      ('x' + x + 'y' + (y + 1)),
+      ('x' + (x + 1) + 'y' + y),
+      // ('x' + (x - 1) + 'y' + (y - 1)),
+      ('x' + x + 'y' + (y - 1)),
+      ('x' + (x - 1) + 'y' + y),
+      // ('x' + (x + 1) + 'y' + (y - 1)),
+      // ('x' + (x - 1) + 'y' + (y + 1)),
+    ];
+    for (let id of arrayId) {
+      for (let gameBlock of gameBlocks) {
+        if ( gameBlock.id === id) {
           gameBlock.classList.add('clickable');
-          gameBlock.addEventListener('click', function (e) {
-            e.preventDefault();
-            removeBadMoves();
-            gameBlock.classList.add('green');
-            gameBlock.classList.remove('clickable');
-            availableMove();
-          });
+          addEventListenerForMove();
+          addEventListenerForBadMove();
+          console.log(id);
         }
       }
     }
+  };
+
+  function move() {
+    const clickedElement = this;
+    console.log(clickedElement);
+    removeBadMoves();
+    clickedElement.classList.add('green');
+    addEventListenerForUndo();
+    clickedElement.classList.remove('clickable');
+    availableMove();
+  }
+
+  function undo() {
+    removeEventListenerForMove();
+    this.classList.remove('green');
+    removeEventListenerForUndo();
+    addEventListenerForMove();
+  }
+
+  const resetDraw = () => {
+    for (let gameBlock of gameBlocks) {
+      gameBlock.classList.remove('green', 'red', 'clickable');
+    }
+    removeEventListenerForBadMove();
+    removeEventListenerForUndo();
+    removeEventListenerForMove();
+    game();
   };
 
   function badMove() {
@@ -113,6 +143,45 @@ const game = () => {
       gameBlock.removeEventListener('click', badMove);
     }
   };
-  firstMove();
+
+  const addEventListenerForResetDraw = () => {
+    document.querySelector('#reset').addEventListener('click', resetDraw);
+  };
+
+  addEventListenerForResetDraw();
+
+  const addEventListenerForUndo = () => {
+    for (let gameBlock of gameBlocks) {
+      if (gameBlock.classList.contains('green')) {
+        gameBlock.addEventListener('click', undo);
+      }
+    }
+  };
+  const removeEventListenerForUndo = () => {
+    for (let gameBlock of gameBlocks) {
+      gameBlock.removeEventListener('click', undo);
+    }
+  };
+  addEventListenerForUndo();
+
+  const addEventListenerForMove = () => {
+    for (let gameBlock of gameBlocks) {
+      if (!gameBlock.classList.contains('green') && gameBlock.classList.contains('clickable')) {
+        gameBlock.addEventListener('click', move);
+      }
+    }
+  };
+  const removeEventListenerForMove = () => {
+    for (let gameBlock of gameBlocks) {
+      {
+        gameBlock.removeEventListener('click', move);
+      }
+    }
+  };
+
 };
-game();
+
+const startDraw = () => {
+  document.querySelector('#start').addEventListener('click', game);
+};
+startDraw();
