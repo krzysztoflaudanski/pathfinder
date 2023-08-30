@@ -26,6 +26,18 @@ const game = () => {
 
   let start = true;
 
+  const prepareArrayId = (id) => {
+    const x = parseInt(id.substring(1, 2));
+    const y = parseInt(id.substring(3, 4));
+    const arrayId = [
+      ('x' + x + 'y' + (y + 1)),
+      ('x' + (x + 1) + 'y' + y),
+      ('x' + x + 'y' + (y - 1)),
+      ('x' + (x - 1) + 'y' + y),
+    ];
+    return arrayId;
+  };
+
   const removeBadMoves = () => {
     for (let gameBlock of gameBlocks)
       gameBlock.classList.remove('red');
@@ -60,9 +72,7 @@ const game = () => {
     for (let gameBlock of gameBlocks) {
       if (gameBlock.classList.contains('green')) {
         const id = gameBlock.getAttribute('id');
-        const x = parseInt(id.substring(1, 2));
-        const y = parseInt(id.substring(3, 4));
-        nextMoves(x, y);
+        nextMoves(id);
       }
     }
   };
@@ -95,6 +105,8 @@ const game = () => {
     console.log(fuu2.length);
     console.log(fuu);
     console.log(fuu2);
+    if (fuu.length === 1)
+      return true;
     if (fuu.length > fuu2.length)
       return false;
     if (fuu.length <= fuu2.length)
@@ -102,15 +114,7 @@ const game = () => {
   };
 
   const checkStart = (startId) => {
-    const x = parseInt(startId.substring(1, 2));
-    const y = parseInt(startId.substring(3, 4));
-    const arrayId = [
-      ('x' + x + 'y' + (y + 1)),
-      ('x' + (x + 1) + 'y' + y),
-      ('x' + x + 'y' + (y - 1)),
-      ('x' + (x - 1) + 'y' + y),
-    ];
-
+    const arrayId = prepareArrayId(startId);
     for (let id2 of arrayId) {
       for (let gameBlock of gameBlocks) {
         if (gameBlock.id === id2 && gameBlock.classList.contains('green') && !(gameBlock.classList.contains('checked'))) {
@@ -123,16 +127,10 @@ const game = () => {
     }
   };
 
-  const nextMoves = (x, y) => {
+  const nextMoves = (id) => {
     removeEventListenerForMove();
     removeEventListenerForBadMove();
-
-    let arrayId = [
-      ('x' + x + 'y' + (y + 1)),
-      ('x' + (x + 1) + 'y' + y),
-      ('x' + x + 'y' + (y - 1)),
-      ('x' + (x - 1) + 'y' + y),
-    ];
+    const arrayId = prepareArrayId(id);
     for (let id of arrayId) {
       for (let gameBlock of gameBlocks) {
         if (gameBlock.id === id && !gameBlock.classList.contains('green')) {
@@ -167,14 +165,7 @@ const game = () => {
       removeEventListenerForMove();
       removeEventListenerForBadMove();
       this.classList.add('clickable');
-      const x = parseInt(id.substring(1, 2));
-      const y = parseInt(id.substring(3, 4));
-      const arrayId = [
-        ('x' + x + 'y' + (y + 1)),
-        ('x' + (x + 1) + 'y' + y),
-        ('x' + x + 'y' + (y - 1)),
-        ('x' + (x - 1) + 'y' + y),
-      ];
+      const arrayId = prepareArrayId(id);
       for (let id of arrayId) {
         for (let gameBlock of gameBlocks) {
           if (gameBlock.id === id) {
