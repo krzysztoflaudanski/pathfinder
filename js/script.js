@@ -26,9 +26,6 @@ const game = () => {
 
   let start = true;
 
-  let arrayId = [''];
-  console.log(arrayId);
-
   const removeBadMoves = () => {
     for (let gameBlock of gameBlocks)
       gameBlock.classList.remove('red');
@@ -43,7 +40,7 @@ const game = () => {
             if (gameBlock.id === ('x0y' + i) || gameBlock.id === ('x' + i + 'y0')
               || gameBlock.id === ('x9y' + i) || gameBlock.id === ('x' + i + 'y9')) {
               removeBadMoves();
-              gameBlock.classList.add('green');
+              gameBlock.classList.add('green', 'start');
               start = false;
               availableMove();
               addEventListenerForMove();
@@ -62,20 +59,72 @@ const game = () => {
   const availableMove = () => {
     for (let gameBlock of gameBlocks) {
       if (gameBlock.classList.contains('green')) {
-        console.log(gameBlock);
         const id = gameBlock.getAttribute('id');
         const x = parseInt(id.substring(1, 2));
         const y = parseInt(id.substring(3, 4));
         nextMoves(x, y);
-        console.log(x, y);
       }
     }
   };
+  const fuu = [];
+  const fuu2 = [];
 
+
+  const checkUndoMove = (id) => {
+    let startId = ('');
+
+    const checkStart = (startId) => {
+      const x = parseInt(startId.substring(1, 2));
+      const y = parseInt(startId.substring(3, 4));
+      const arrayId = [
+        ('x' + x + 'y' + (y + 1)),
+        ('x' + (x + 1) + 'y' + y),
+        ('x' + x + 'y' + (y - 1)),
+        ('x' + (x - 1) + 'y' + y),
+      ];
+
+      for (let id2 of arrayId) {
+        for (let gameBlock of gameBlocks) {
+          if (gameBlock.id === id2 && gameBlock.classList.contains('green') && !(gameBlock.classList.contains('checked'))) {
+            gameBlock.classList.add('checked');
+            console.log(id2);
+            fuu2.push(id2);
+            checkStart(id2);
+          }
+        }
+      }
+    };
+
+
+    for (let gameBlock of gameBlocks) {
+      if (gameBlock.id === id) {
+        gameBlock.classList.remove('green');
+      }
+      if (gameBlock.classList.contains('green') && !(gameBlock.id === id)) {
+        fuu.push(gameBlock.id);
+      }
+      if (gameBlock.classList.contains('start')) {
+        startId = gameBlock.id;
+      }
+      if (gameBlock.id === startId) {
+        checkStart(startId);
+      }
+    }
+    console.log(fuu.length);
+    console.log(fuu2.length);
+    console.log(fuu);
+    console.log(fuu2);
+    if (fuu.length > fuu2.length)
+      return false;
+    if (fuu.length >= fuu2.length)
+      return true;
+
+  };
   const nextMoves = (x, y) => {
     removeEventListenerForMove();
     removeEventListenerForBadMove();
-    arrayId = [
+
+    let arrayId = [
       // ('x' + (x + 1) + 'y' + (y + 1)),
       ('x' + x + 'y' + (y + 1)),
       ('x' + (x + 1) + 'y' + y),
@@ -87,11 +136,10 @@ const game = () => {
     ];
     for (let id of arrayId) {
       for (let gameBlock of gameBlocks) {
-        if ( gameBlock.id === id) {
+        if (gameBlock.id === id && !gameBlock.classList.contains('green')) {
           gameBlock.classList.add('clickable');
           addEventListenerForMove();
           addEventListenerForBadMove();
-          console.log(id);
         }
       }
     }
@@ -99,7 +147,6 @@ const game = () => {
 
   function move() {
     const clickedElement = this;
-    console.log(clickedElement);
     removeBadMoves();
     clickedElement.classList.add('green');
     addEventListenerForUndo();
@@ -108,10 +155,41 @@ const game = () => {
   }
 
   function undo() {
-    removeEventListenerForMove();
-    this.classList.remove('green');
+    const id = this.getAttribute('id');
     removeEventListenerForUndo();
-    addEventListenerForMove();
+    if (!checkUndoMove(id)) {
+      console.log(this);
+      this.classList.add('green');
+    }
+    else {
+      removeBadMoves();
+      removeEventListenerForUndo();
+      removeEventListenerForMove();
+      removeEventListenerForBadMove();
+
+      this.classList.add('clickable');
+      //console.log(id);
+      const x = parseInt(id.substring(1, 2));
+      const y = parseInt(id.substring(3, 4));
+      const arrayId = [
+        ('x' + x + 'y' + (y + 1)),
+        ('x' + (x + 1) + 'y' + y),
+        ('x' + x + 'y' + (y - 1)),
+        ('x' + (x - 1) + 'y' + y),
+      ];
+      for (let id of arrayId) {
+        for (let gameBlock of gameBlocks) {
+          if (gameBlock.id === id) {
+            gameBlock.classList.remove('clickable');
+          }
+        }
+      }
+      addEventListenerForMove();
+      addEventListenerForBadMove();
+    }
+    fuu.length = 0;
+    fuu2.length = 0;
+    addEventListenerForUndo();
   }
 
   const resetDraw = () => {
@@ -126,7 +204,6 @@ const game = () => {
 
   function badMove() {
     const clickedElement = this;
-    console.log(clickedElement);
     clickedElement.classList.add('red');
   }
 
@@ -152,6 +229,7 @@ const game = () => {
 
   const addEventListenerForUndo = () => {
     for (let gameBlock of gameBlocks) {
+      gameBlock.classList.remove('checked');
       if (gameBlock.classList.contains('green')) {
         gameBlock.addEventListener('click', undo);
       }
