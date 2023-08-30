@@ -116,7 +116,7 @@ const game = () => {
     console.log(fuu2);
     if (fuu.length > fuu2.length)
       return false;
-    if (fuu.length >= fuu2.length)
+    if (fuu.length <= fuu2.length)
       return true;
 
   };
