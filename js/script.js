@@ -73,35 +73,13 @@ const game = () => {
   const checkUndoMove = (id) => {
     let startId = ('');
 
-    const checkStart = (startId) => {
-      const x = parseInt(startId.substring(1, 2));
-      const y = parseInt(startId.substring(3, 4));
-      const arrayId = [
-        ('x' + x + 'y' + (y + 1)),
-        ('x' + (x + 1) + 'y' + y),
-        ('x' + x + 'y' + (y - 1)),
-        ('x' + (x - 1) + 'y' + y),
-      ];
-
-      for (let id2 of arrayId) {
-        for (let gameBlock of gameBlocks) {
-          if (gameBlock.id === id2 && gameBlock.classList.contains('green') && !(gameBlock.classList.contains('checked'))) {
-            gameBlock.classList.add('checked');
-            console.log(id2);
-            fuu2.push(id2);
-            checkStart(id2);
-          }
-        }
-      }
-    };
-
-
     for (let gameBlock of gameBlocks) {
       if (gameBlock.id === id) {
         gameBlock.classList.remove('green');
       }
       if (gameBlock.classList.contains('green') && !(gameBlock.id === id)) {
         fuu.push(gameBlock.id);
+        console.log(id);
       }
       if (gameBlock.classList.contains('start')) {
         startId = gameBlock.id;
@@ -110,6 +88,9 @@ const game = () => {
         checkStart(startId);
       }
     }
+
+    fuu.sort();
+    fuu2.sort();
     console.log(fuu.length);
     console.log(fuu2.length);
     console.log(fuu);
@@ -118,21 +99,39 @@ const game = () => {
       return false;
     if (fuu.length <= fuu2.length)
       return true;
-
   };
+
+  const checkStart = (startId) => {
+    const x = parseInt(startId.substring(1, 2));
+    const y = parseInt(startId.substring(3, 4));
+    const arrayId = [
+      ('x' + x + 'y' + (y + 1)),
+      ('x' + (x + 1) + 'y' + y),
+      ('x' + x + 'y' + (y - 1)),
+      ('x' + (x - 1) + 'y' + y),
+    ];
+
+    for (let id2 of arrayId) {
+      for (let gameBlock of gameBlocks) {
+        if (gameBlock.id === id2 && gameBlock.classList.contains('green') && !(gameBlock.classList.contains('checked'))) {
+          gameBlock.classList.add('checked');
+          console.log(id2);
+          fuu2.push(id2);
+          checkStart(id2);
+        }
+      }
+    }
+  };
+
   const nextMoves = (x, y) => {
     removeEventListenerForMove();
     removeEventListenerForBadMove();
 
     let arrayId = [
-      // ('x' + (x + 1) + 'y' + (y + 1)),
       ('x' + x + 'y' + (y + 1)),
       ('x' + (x + 1) + 'y' + y),
-      // ('x' + (x - 1) + 'y' + (y - 1)),
       ('x' + x + 'y' + (y - 1)),
       ('x' + (x - 1) + 'y' + y),
-      // ('x' + (x + 1) + 'y' + (y - 1)),
-      // ('x' + (x - 1) + 'y' + (y + 1)),
     ];
     for (let id of arrayId) {
       for (let gameBlock of gameBlocks) {
@@ -156,6 +155,7 @@ const game = () => {
 
   function undo() {
     const id = this.getAttribute('id');
+    this.classList.remove('green');
     removeEventListenerForUndo();
     if (!checkUndoMove(id)) {
       console.log(this);
@@ -166,9 +166,7 @@ const game = () => {
       removeEventListenerForUndo();
       removeEventListenerForMove();
       removeEventListenerForBadMove();
-
       this.classList.add('clickable');
-      //console.log(id);
       const x = parseInt(id.substring(1, 2));
       const y = parseInt(id.substring(3, 4));
       const arrayId = [
@@ -194,7 +192,7 @@ const game = () => {
 
   const resetDraw = () => {
     for (let gameBlock of gameBlocks) {
-      gameBlock.classList.remove('green', 'red', 'clickable');
+      gameBlock.classList.remove('green', 'red', 'clickable', 'start');
     }
     removeEventListenerForBadMove();
     removeEventListenerForUndo();
@@ -230,7 +228,7 @@ const game = () => {
   const addEventListenerForUndo = () => {
     for (let gameBlock of gameBlocks) {
       gameBlock.classList.remove('checked');
-      if (gameBlock.classList.contains('green')) {
+      if (gameBlock.classList.contains('green') && !gameBlock.classList.contains('start')) {
         gameBlock.addEventListener('click', undo);
       }
     }
